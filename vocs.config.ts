@@ -1,15 +1,19 @@
-import { defineConfig } from 'vocs'
+import { defineConfig } from "vocs";
 
 export default defineConfig({
-  title: 'Docs',
+  title: "Docs",
   sidebar: [
     {
-      text: 'Getting Started',
-      link: '/getting-started',
+      text: "Getting Started",
+      link: "/getting-started",
     },
     {
-      text: 'Example',
-      link: '/example',
+      text: "Prompt Guide",
+      link: "/prompt-guide",
+    },
+    {
+      text: "Advanced Prompt Guide",
+      link: "/advanced-prompt-guide",
     },
   ],
-})
+});

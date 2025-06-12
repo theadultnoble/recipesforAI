@@ -1,4 +1,4 @@
-# Model Prompt Engineering Guide
+# Prompt Engineering Cookbook
 
 This cookbook will discuss prompt engineering skills and outline how to optimize your prompts to achieve the expected results from a model. It will include optimized prompt examples for standardized generative models.
 
@@ -8,22 +8,18 @@ Prompt engineering refers to the iterative process of modifying natural-language
 
 The techniques discussed in this cookbook can be applied when writing prompts for any generative multimodal model, regardless of training. It also encompasses both **System Messages** to establish the model's behavior and constraints before user interaction begins, as well as **Assistant messages** that influence the model's responses in multi-turn conversations. They both maintain conversation continuity and help the model understand its established persona and previous commitments.
 
----
-
 ## **Prompt Anatomy**
 
 A good prompt requires several key elements to be present:
 
 - **Role**: This refers to the persona assigned to a model to guide its behavior and responses.
 - **Task**: The task provides a detailed description of the model's objective and outlines the approach to executing it.
-- **Input Context**: Input context is the information, background, and situational details passed to the model. This input can be structured or unstructured text, as well as multimodal content such as files, images, or audio. Accurate context is essential for grounding the model’s outputs with user intent.
+- **Input Context**: Input context is the information, background, and situational details passed to the model. This input can be structured or unstructured text, as well as multimodal content such as files, images, or audio. Accurate context is essential for grounding the model's outputs with user intent.
 - **Output**: This is the format in which a model generates its response. You determine how the model communicates results, ranging from plain text to code snippets, JSON objects, or formatted prose.
 - **Constraints**: Prompt constraints are the guidelines that define how the model should behave when responding to user prompts.
 - **Tools**: Tools are external functions or APIs that a model can invoke to enhance its responses or perform tasks beyond its native language generation capabilities.
 
 Depending on the prompt's objective, certain elements may be excluded. Prompt engineering should be approached in the same way as writing code. Understanding the objective of your prompt should influence how you structure an effective prompt message.
-
----
 
 ### Structuring Prompt Hierarchy
 
@@ -33,7 +29,7 @@ Language models are sensitive to token order: if task instructions are buried in
 
 Adopt a top-to-bottom prompt hierarchy, placing essential instructions at the bottom of the prompt.
 
-Here is a good starting point for structuring your prompts hierarchy.
+A solid starting point for structuring your prompt hierarchy comes from OpenAI’s GPT-4.1 prompt guide. This structure works reliably across any generative model.
 
 ```bash
 # Role and Objective
@@ -47,11 +43,9 @@ Here is a good starting point for structuring your prompts hierarchy.
 # Final instructions and prompt to think step by step
 ```
 
----
-
 ### Delimiters
 
-**Delimiters** are markers that organize different parts of a prompt or response.
+**Delimiters** are markers that organize different parts of a prompt or model response.
 
 LLMs are trained on extensive, structured data in various formats. During training and fine-tuning, a model is taught to process text through tokenization and recognize format patterns (_delimiters_).
 
@@ -61,12 +55,41 @@ Without delimiters, the model must infer boundaries and formats from context alo
 `Markdown`, `JSON` and `XML` tags are excellent delimiters for inferring structure to your prompts.
 
 ```
+<!-- XML-style Delimiters -->
+<prompt>
+  <role>Research Assistant</role>
+  <objective>Summarize a technical article</objective>
 
+  <!-- Markdown-style Instructions -->
+  # Instructions
+  - Read the text carefully
+  - Extract key points
+  - Write a concise summary in plain English
+
+  ## Reasoning Steps
+  1. Identify core arguments
+  2. Group related points
+  3. Translate to summary format
+
+  # Output Format (JSON-style)
+  {
+    "summary": "[Plain text summary]",
+    "keyPoints": ["Point 1", "Point 2", "Point 3"]
+  }
+
+  # Example
+  Input: "The article discusses tokenization in NLP..."
+  Output: "This article explains how text is broken into tokens for processing."
+
+  # Context
+  Article provided by user
+
+  # Final Prompt
+  Think step by step and provide your summary in the specified format.
+</prompt>
 ```
 
 Only apply one of the delimiter option methods in your prompts. You should also maintain that choice across your conversation. You want to maintain a recognizable pattern within your conversational flow. As you can see in the example above, you can also include special characters to improve parsing accuracy.
-
----
 
 ## Multi-turn Conversations
 
@@ -85,9 +108,7 @@ The entire thread is processed holistically by the model, allowing it to referen
 
 You can find a list of top language models and their context window capacities on Velum's LLM Ratings page.
 
-![Context window, cost and speed comparison](/assets/images/context-window-comparison.png)
-
-Context window, cost and speed comparison
+![Context window, cost and speed comparison](../assets/context-window-comparison.png)
 
 Here are some basic context reinforcement techniques to aid a model maintain context within your conversation.
 
@@ -97,13 +118,17 @@ Using this technique, the model retains a global context of your conversation an
 
 ```
 
-"Let me define our key components:
-- UserService: handles authentication and profile management
-- OrderService: processes purchases and payments
-- InventoryService: manages product stock
+::: Context Foundation :::
+  You are assisting with [project or scenario name]. The project involves [key background details and scope]. The deadline is [timeframe].
+  Constraints include [any known limitations or requirements].
 
-Now, when we discuss UserService optimization, we'll have clear context."
+  Note: All responses should remain grounded in this context.. I may refer back to this block using the anchor [PROJECT_OVERVIEW].
 
+  Now, when  you reference PROJECT_OVERVIEW deep into your thread, the model will have clear context."
+
+  === Example ===
+  Input: "Based on [PROJECT_OVERVIEW], what should I prioritize first?"
+  Output: "Given your deadline, the first priority should be..."
 ```
 
 **Use Structured Context Blocks:** Using delimiters to structure complex context will improve parsing accuracy. The clearer picture the model has of your conversation's scope and focus, the easier it'll be for it to maintain context and reference your anchors to make relationships.
@@ -113,16 +138,14 @@ Now, when we discuss UserService optimization, we'll have clear context."
 For example, the prompt below summarizes the discussion and indicates the direction the chat is heading next.
 
 ```
-"To summarize our discussion so far: we've established a database schema for user profiles, implemented basic CRUD operations, and now we're working on adding search functionality. Next, I'd like to discuss indexing strategies."
+Input: "To summarize our discussion so far: we've established [PROJECT_OVERVIEW] and now we're working on [current conversation objective]. Next, I'd like to [new task] ."
 ```
 
-**Selective Context Retention**
-
-Not all data from your thread remains important to your conversation. Reference or repeat only the critical pieces of context to steer the model and avoid unintended associations. This practice is particularly effective when switching topics, refining previous outputs, or focusing the model’s attention on a specific objective.
+**Selective Context Retention:** Not all data from your thread remains important to your conversation. Reference or repeat only the critical pieces of context to steer the model and avoid unintended associations. This practice is particularly effective when switching topics, refining previous outputs, or focusing the model's attention on a specific objective.
 An example of how to perform this is below.
 
 ```
-"From our earlier conversation, the key technical decisions were: React frontend, Express backend, MongoDB database. Skipping the deployment discussion for now - let's focus on implementing the user profile update feature."
+Input: "From our earlier conversation, the key technical decisions were: [PROJECT_OVERVIEW]. Skipping [Project_Detail] for now - let's focus on implementing [new task]."
 ```
 
 ### Error Recovery
@@ -130,7 +153,9 @@ An example of how to perform this is below.
 **Use Confirmation Requests:** Ask for confirmation of understanding before proceeding.
 
 ```
-"Before we implement this solution, let me confirm: you understand I need real-time updates pushed to the client, not polling-based updates, correct?"
+Input: "Before we move ahead, let me confirm: you understand every objective along with all the information discussed in [PROJECT_OVERVIEW]?. Be sure to ask for clarification if anything is unclear."
+
+Output: Model confirms or denies(asks for clarification)
 ```
 
 When you spot an error, you can also employ context reconstruction to better align your prompts' objectives with the model's understanding.
@@ -145,11 +170,10 @@ Recovery: Address misunderstandings immediately
 Closure: Summarize outcomes and next steps
 ```
 
----
-
 <aside>
-ℹ️
-
-ChatGPT models are not particularly good at retaining uploaded files in memory; when working with context from such files, it is best to copy and paste any relevant text into the chat. When building prompt agent systems, you can upload the PDF "[**The Prompt Report: A Systematic Survey of Prompting Techniques**](https://learning.coach/wp-content/uploads/2024/06/2024-The-Prompt-Report-A-Systematic-Survey-of-Prompting-Techniques.pdf)" to your system prompt to provide the model with better context.
-
+  Most models struggle to retain uploaded files in memory. For better results,
+  copy relevant text into the chat. When building agents system prompt, you can
+  upload this PDF [The Prompt Report: A Systematic Survey of Prompting
+  Techniques](https://learning.coach/wp-content/uploads/2024/06/2024-The-Prompt-Report-A-Systematic-Survey-of-Prompting-Techniques.pdf)
+  to provide the model with better context.
 </aside>
