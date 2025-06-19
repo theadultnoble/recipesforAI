@@ -15,5 +15,13 @@ export default defineConfig({
       text: "Advanced Prompt Guide",
       link: "/advanced-prompt-guide",
     },
+    {
+      text: "Build An Agent",
+      link: "/build-an-agent",
+    },
+    {
+      text: "Glossary",
+      link: "/glossary",
+    },
   ],
 });

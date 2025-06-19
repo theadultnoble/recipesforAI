@@ -31,7 +31,7 @@ Adopt a top-to-bottom prompt hierarchy, placing essential instructions at the bo
 
 A solid starting point for structuring your prompt hierarchy comes from OpenAI’s GPT-4.1 prompt guide. This structure works reliably across any generative model.
 
-```bash
+```text
 # Role and Objective
 # Instructions
 ## Sub-categories for more detailed instructions
@@ -42,6 +42,10 @@ A solid starting point for structuring your prompt hierarchy comes from OpenAI�
 # Context
 # Final instructions and prompt to think step by step
 ```
+
+It is fair to note that for simpler well known task you could exclude examples within your prompt. LLMs are trained on a vast range of patterns and tasks. With good phrasing, they can generalize well even without seeing specific examples.
+
+However, for more niche task, providing examples will output better results. The goal is to guide the model’s behavior by showing what kind of response you expect. You're leveraging in-context learning—the model learns the pattern from examples and tries to continue it. This method of prompting is called Few-Shot prompting.
 
 ### Delimiters
 
@@ -54,7 +58,7 @@ Without delimiters, the model must infer boundaries and formats from context alo
 
 `Markdown`, `JSON` and `XML` tags are excellent delimiters for inferring structure to your prompts.
 
-```
+```text
 <!-- XML-style Delimiters -->
 <prompt>
   <role>Research Assistant</role>
@@ -71,7 +75,8 @@ Without delimiters, the model must infer boundaries and formats from context alo
   2. Group related points
   3. Translate to summary format
 
-  # Output Format (JSON-style)
+  <!-- JSON-style Output -->
+  # Output Format
   {
     "summary": "[Plain text summary]",
     "keyPoints": ["Point 1", "Point 2", "Point 3"]
@@ -116,7 +121,7 @@ Here are some basic context reinforcement techniques to aid a model maintain con
 
 Using this technique, the model retains a global context of your conversation and passes that context to every response it outputs.
 
-```
+```text
 
 ::: Context Foundation :::
   You are assisting with [project or scenario name]. The project involves [key background details and scope]. The deadline is [timeframe].
@@ -137,14 +142,14 @@ Using this technique, the model retains a global context of your conversation an
 
 For example, the prompt below summarizes the discussion and indicates the direction the chat is heading next.
 
-```
+```text
 Input: "To summarize our discussion so far: we've established [PROJECT_OVERVIEW] and now we're working on [current conversation objective]. Next, I'd like to [new task] ."
 ```
 
 **Selective Context Retention:** Not all data from your thread remains important to your conversation. Reference or repeat only the critical pieces of context to steer the model and avoid unintended associations. This practice is particularly effective when switching topics, refining previous outputs, or focusing the model's attention on a specific objective.
 An example of how to perform this is below.
 
-```
+```text
 Input: "From our earlier conversation, the key technical decisions were: [PROJECT_OVERVIEW]. Skipping [Project_Detail] for now - let's focus on implementing [new task]."
 ```
 
@@ -152,7 +157,7 @@ Input: "From our earlier conversation, the key technical decisions were: [PROJEC
 
 **Use Confirmation Requests:** Ask for confirmation of understanding before proceeding.
 
-```
+```text
 Input: "Before we move ahead, let me confirm: you understand every objective along with all the information discussed in [PROJECT_OVERVIEW]?. Be sure to ask for clarification if anything is unclear."
 
 Output: Model confirms or denies(asks for clarification)
@@ -162,7 +167,7 @@ When you spot an error, you can also employ context reconstruction to better ali
 
 ### Example of an Ideal Conversation Flow
 
-```
+```text
 Opening: Establish clear context and objectives
 Development: Build on previous context with explicit references
 Maintenance: Periodically summarize and confirm understanding
