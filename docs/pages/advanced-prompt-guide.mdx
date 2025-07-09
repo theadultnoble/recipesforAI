@@ -1,3 +1,168 @@
 # Advanced Prompting Strategies
 
 This section covers advanced prompting methodologies for users ready to move beyond basic techniques. Learn systematic approaches to prompt optimization, including meta-prompting workflows, reasoning model strategies, and complex task orchestration. Each method provides concrete implementation steps and measurable improvement techniques.
+
+The previous section discussed basic prompt practices to ensure consistent and reliable results from inferring a trained model.
+Depending on the training of your model, these may or may not be sufficient in every situational inference you attempt to perform.
+
+The capabilities and tasks that models can achieve through expensive fine-tuning are rapidly evolving with time. Some models are capable of advanced reasoning, Retrieval Augmented Generation (RAG), and more.
+
+This section covers advanced prompting methodologies to move beyond basic techniques. Learn systematic approaches to prompt optimization, unlock these advanced model capabilities, including meta-prompting workflows, reasoning model strategies, and orchestrating complex tasks. Each method provides concrete implementation steps and measurable improvement techniques.
+
+## Meta-prompting
+
+Meta-prompting can be viewed as a form of **task decomposition**, except it does so at the level of **instruction** rather than **content.** The method gained popularity after Google introduced the **Chain-of-Thought (CoT)** prompting technique. This technique encouraged models to:
+
+- Think step-by-step
+- Decompose problems
+- Explain their reasoning before giving a final answer.
+
+As Artificial Intelligence research companies released increasingly powerful language models (like _GPT-4_, _Grok‑3_, _LLaMA 3.1_, _Claude 3.5, Sonnet_), it becomes apparent that sometimes the best way to get the model to perform its best is to prompt it to teach you how to prompt better.
+
+- First, instruct the model to generate a high-quality prompt for your utility.
+- Then, feed that prompt back into the model to obtain the final output.
+
+This is a highly effective prompting technique that can be applied to autonomous agents, AI assistants that delegate tasks to other AI systems, and reusable instruction pipelines. Each generated prompt can be iterated over multiple turns and improved with each turn. These are measurable improvements in your model's outputs.
+
+The video below demonstrates how to perform meta-prompting within the ChatGPT interface. We are using the default GPT-4o model for this example.
+
+[https://www.notion.so](https://www.notion.so)
+
+To take advantage of that, start by setting up an initial prompt that explains your goals and defines what a “high-quality prompt” looks like. Assign ChatGPT the role of a prompt engineer and ask it to generate the ideal prompt for your objective. Once you get that output, copy and paste it into a new chat for the actual task.
+
+Here's an example of a prompt fed into the model:
+
+```
+*>> You are ChatGPT acting as a prompt engineer.
+>> Your role is to help me craft optimized prompts for specific tasks.
+>> I will describe my goals, constraints, and preferences.
+>> You should ask clarifying questions if needed.
+>> Then generate the most effective prompt I could use in a fresh chat.
+>> A high-quality prompt should be:
+>> - Clear and concise
+>> - Explicit about the desired format or tone
+>> - Structured to maximize relevance and completeness
+>> - Easy to reuse or adapt for similar tasks
+
+>> Begin by acknowledging these instructions, then wait for my task description.*
+```
+
+Notice the `">>"` symbol, which implies instructions, in contrast to the input. This difference aids GPT in this context, as it allows you to fine-tune the instructions with the symbol at any point, even after the initial instructions are established and utilised for multiple outputs.
+
+An example of a follow-up prompt with context:
+
+```
+I need help creating a prompt that will summarize long-form news articles into concise, neutral summaries in bullet point form. The summaries should be written for a general audience with no specialized knowledge.
+```
+
+If building an agent that requires this technique, you can feed the context into a custom prompting tool and have it pass its generated prompt into your main agent setup. You can fine-tune with as much context as needed to get the results you're looking for.
+
+## Forcing Reasoning in a Model
+
+With newer model releases, you can perform tasks that require multi-step logic, better math, and human-like reasoning. With access to these advanced models, reasoning is implemented by default in answering every prompt request made. This section aims to demonstrate how these advanced models operate and how to induce reasoning in non-reasoning models.
+
+Let’s deconstruct and visualize what Reasoning for an LLM looks like.
+
+It’s learned behavior from data, plus architecture designed to simulate thought. LLMs can’t truly “understand” like humans, but the best ones now mimic our reasoning patterns shockingly well.
+When prompted with a task, rather than attempting to pattern match with its expansive data and regurgitate and answer it;
+
+- Breaks the question down into steps.
+- Uses logic or learned rules to handle new combinations.
+- Sticks to the task's focus, trying to find the correct answer, not just any plausible one.
+- Keeps track of details and adjusts as it goes.
+
+This is all about trained abilities, refined through sophisticated fine-tuning. The model goes through the problem internally, generating what you could refer to as thinking tokens, which serve as an internal scratchpad for analyzing the task. Then, when complete, it outputs an answer to the user.
+The trade-off is that it requires twice the context window and significantly more token processing.
+
+<aside>
+
+What are thinking tokens?
+**Thinking tokens** are the **intermediate steps** or pieces of text that a language model _generates internally_ (or that you can explicitly see if prompting it to think step-by-step) **before giving you a final answer**.
+
+</aside>
+
+Below, we essentially have a diagram to explain how reasoning models work:
+
+![Reasoning In a Model](../assets/reasoning-in-a-model.png)
+
+### Chain of Thought (COT)
+
+In non-reasoning models, you can still force reasoning with advanced prompting. With the correct tuning, it will get the job done. This could be useful in certain situations with even advanced reasoning models. A common way to do this is to encourage Chain of Thought (COT) by using good reasoning scaffolds in your prompt.
+
+Instruct AI models to show their step-by-step reasoning process before arriving at a final answer, mimicking human problem-solving patterns. Like how you feel when thinking out loud. System 2 thinking
+
+Some chatbots, like Google's Gemini, have built-in COT reasoning and even show it in the response. In other models, adding a simple phrase like “Let's think step by step” or “Work through this systematically” is enough to change your model's output. Instead of jumping directly to conclusions, the model explicitly works through intermediate reasoning steps, leading to more accurate and interpretable results. In simple terms, it has to sit back and think about the prompt being asked. However, engaging COT like this may reveal the model's internal reasoning biases and patterns. Be sure to look out for these.
+
+Here’s an example of a reasoning that should engage reasoning:
+
+```
+You have three boxes. One contains only apples, one contains only oranges, and one contains both. All three are mislabeled. You can reach into one box and pull out a single fruit.
+
+How can you correctly label all the boxes?
+
+Think about this step by step.
+```
+
+Here we provide a thought process to follow:
+
+```
+You have three boxes: one with only apples, one with only oranges, and one with both. All three are mislabeled. You're allowed to pick one fruit from one box.
+
+Figure out how to correctly label all the boxes.
+
+Follow this process step by step:
+1. Summarize what the rules mean — especially "mislabeled."
+2. Choose the best box to sample and explain why.
+3. Use the result to determine what's in each box.
+4. Relabel all boxes correctly, based on logic.
+```
+
+Below, you can see how both prompts perform:
+
+[](https://www.notion.so)
+
+Reasoning scaffolds will provide frameworks of systematic thinking for your model. This is useful under constraints, where you may need consistent analysis across a problem, or to guide the model’s thinking in specific directions. It is fairly easy to apply:
+
+Example of a Scaffold. Domain-Specific Implementation:
+
+```
+Prompt: "Should we launch this product? Use SWOT analysis:
+- STRENGTHS: Internal positive factors
+- WEAKNESSES: Internal negative factors
+- OPPORTUNITIES: External positive factors
+- THREATS: External negative factors
+Then make a recommendation."
+
+Response:
+STRENGTHS:
+- Strong R&D team
+- Established distribution network
+WEAKNESSES:
+- Limited marketing budget
+- New product category for us
+OPPORTUNITIES:
+- Growing market segment
+- Weak competition
+THREATS:
+- Economic uncertainty
+- Regulatory changes possible
+RECOMMENDATION: Launch with phased rollout..."
+```
+
+You should measure consistency across multiple attempts. You can develop a personal solid structure prompt for non-domain-specific implementations. The model will showcase a logical flow between reasoning steps, confirming in intermediate sessions or self-correcting if an error occurs. In certain few cases, models have been found to learn to "fake" reasoning, showing plausible but incorrect steps. If your prompt accounts for such cases, you should be clear of these.
+
+Some issues you could run into are below;
+
+### **Problem**: Model gets lost in complex reasoning chains
+
+**Solution**: Break into smaller sub-problems or use intermediate checkpoints
+
+### **Problem**: Inconsistent reasoning quality
+
+**Solution**: Provide multiple high-quality examples showing desired reasoning depth. Few-shot prompting should be induced here.
+
+A larger token size model will be less likely to dodge these pitfalls when performing COT - larger models benefit more from this technique.
+
+###
+
+---
