@@ -1,12 +1,8 @@
 import { defineConfig } from "vocs";
 
 export default defineConfig({
-  title: "Docs",
+  title: "Recipes for AI",
   sidebar: [
-    {
-      text: "Getting Started",
-      link: "/getting-started",
-    },
     {
       text: "Prompt Guide",
       link: "/prompt-guide",

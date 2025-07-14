@@ -2,15 +2,24 @@
 layout: landing
 ---
 
-import { HomePage } from 'vocs/components'
+import { HomePage } from "vocs/components";
+import { CookbookGrid } from "../components/HomePage/CookbookGrid";
 
 <HomePage.Root>
   <HomePage.Logo />
-  <HomePage.Tagline>My Awesome Docs</HomePage.Tagline>
-  <HomePage.InstallPackage name="vocs" type="init" />
-  <HomePage.Description>This is a description of my documentation website.</HomePage.Description>
+  <HomePage.Description>
+    Recipes for AI is a practical cookbook with step-by-step guides for AI
+    prompting and language model workflows. This cookbook provides actionable
+    strategies, real-world examples, and proven techniques to maximize your
+    results with any large language models.
+  </HomePage.Description>
   <HomePage.Buttons>
-    <HomePage.Button href="/getting-started" variant="accent">Get started</HomePage.Button>
-    <HomePage.Button href="https://github.com/wevm/vocs">GitHub</HomePage.Button>
+    <HomePage.Button href="/prompt-guide" variant="accent">
+      Get started
+    </HomePage.Button>
+    <HomePage.Button href="https://github.com/theadultnoble/recipesforGPT">
+      GitHub
+    </HomePage.Button>
   </HomePage.Buttons>
+  <CookbookGrid />
 </HomePage.Root>
