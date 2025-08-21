@@ -12,7 +12,11 @@ export default defineConfig({
       link: "/advanced-prompt-guide",
     },
     {
-      text: "Build An Agent",
+      text: "Intro to AI Agents",
+      link: "/intro-to-ai-agents",
+    },
+    {
+      text: "Build-an-agent",
       link: "/build-an-agent",
     },
     {

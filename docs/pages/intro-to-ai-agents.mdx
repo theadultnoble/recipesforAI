@@ -1,0 +1,111 @@
+# Intro to AI agents
+
+This marks the beginning of the 'Build an AI Agent’ series. The purpose of the next series of guides will be to break down everything you need to know to understand AI agents and how to build agents into your systems. This guide will discuss what AI agents conceptually are, how they differ from automated systems, and the fundamental principles behind their operation.
+
+## What is an AI agent, and what is it not?
+
+Agents are not new; however, the extent of their capabilities has reached new heights due to the advancement of LLMs’ ability to [ReAct](https://www.notion.so/ReAct-Guide-on-Model-Reasoning-Action-22b2c2cd02698062ad51e2123ffdaa7b?pvs=21). This, coupled with the implementation of [RAG (Retrieval Augmented Generation)](https://en.wikipedia.org/wiki/Retrieval-augmented_generation), has improved query results.
+
+These advancements in AI technology are happening very fast. What was breakthrough technology last few months ago is standard agent behavior today. This challenge makes it difficult to establish a sufficiently broad and encompassing definition of ‘what is an AI agent’.
+
+So, rather than attempt to give a bleak definition that may fall short at any moment, let’s define what an ‘AI agent is not’. A fair metric to judge a system by is the degree of “Agenticness” a system operates.
+
+<aside>
+  **Agenticness** refers to the extent to which an artificial agent demonstrates
+  autonomy in perceiving its environment, formulating context-aware decisions,
+  and executing goal-directed actions that influence outcomes without continuous
+  external control.
+</aside>
+
+The general term for all such systems, no matter the degree of autonomy, is Agentic systems. For an agentic system to qualify as an AI agent, it must surpass the threshold at which its decision-making processes, goal-directed behaviors, and selection of tools are no longer explicitly programmed by a human.
+
+For example, consider the design of an agentic system tasked with generating financial reports from a provided database. To ensure consistent results, you could define a structured workflow with specific intervention points that guide the agent in accomplishing this objective. In fact, in a well-defined task like this, where the steps are already established, this approach is preferable.
+
+Alternatively, a more agentic approach provides the agent with the necessary tools and allows it to act autonomously. It determines the sequence of actions, selects appropriate tools, and evaluates its outputs against the required criteria.
+
+In both scenarios, the system exhibits autonomy, but at differing levels depending on the extent of design constraints imposed. The latter sits closer to true AI agentic behavior than the former.
+
+### Agent Cores
+
+3 core features are imperative for any AI agent design:
+
+- **Reasoning**: For an agent to effectively act on a task, it must possess the capacity for strategic reasoning. This manifests primarily in two forms:
+  - **Planning**: The agent decomposes tasks into smaller, manageable subgoals/steps, which facilitates efficient handling.
+  - **Evaluation**: The agent can reflect on earlier actions, adapt to environmental changes, and iteratively refine its approach, thereby enhancing the quality of outcomes.
+- **Action(Tools)**: Action refers to an agent’s capacity to engage with external environments by invoking function-calling tools. This encompasses operations like interfacing with external APIs or interacting directly with system-level software.
+- **Memory**: The memory of an agent persists state context across multiple turns for the duration of the agent’s lifecycle. A common choice for memory storage is a vector database store.
+
+The reasoning core is provided by the agents’ [LRM](https://en.wikipedia.org/wiki/Reasoning_language_model) and determines the actions; those actions(tools) are involved and produce results that then get evaluated by the LRM, and memory informs the entire process while preserving important context to serve alongside future objectives. This process runs in a loop until said task is completed successfully.
+
+Here is a simple representation of an AI agent lifecycle.
+
+![AI agent lifecycle](../assets/AI-agent-lifecycle.png)
+
+## Agent Workflows
+
+As amazing as this technology is, in all cases, you should manage the complexity of your agent and avoid LLM autonomy where it is not needed. As far as LLMs have come, true AGI has not been achieved. Full reliance on the model's ability to make the right decision should not be trusted. These models are still prone to exhibiting hallucinations, are susceptible to prompt injection attacks, etc.
+
+The rule of thumb is, if you can clearly define the task's steps, then you should constrain your agent to that workflow with appropriate guardrails to prevent possible errors. Such workflows are typically represented as stepwise sequences that incorporate decision points, at which the agent (or multiple agents) may follow depending on contextual conditions or intermediate outcomes.
+
+I say _“agents”_ because these workflows could be implemented across a **multi-agent** design working on the same task. Multi-agent systems provide the architecture to tackle complexity through specialization and collaboration, much like a successful human organization.
+
+This can transcend AI as a tool to a collaborative ecosystem capable of addressing challenges that a single agent may find difficult. However, just like human organizations, you trade the simplicity of orchestrating a single agent for the complexity of multiple agents.
+
+Although many workflow patterns have been proposed across the agent systems literature, these can be consolidated into three principal.
+
+### Linear Sequence Workflow
+
+This is the simplest workflow design to implement for any agent use case. The sub-agents are arranged in a sequential chain where the output of one agent is passed as input to the next agent. That agent, equipped with its own tools and system instructions, processes the updated state and advances the task accordingly.
+
+A primary drawback of this design lies in its latency: only one sub-agent is active at any given time, while the others remain idle. Consequently, there is no asynchronous behavior through the course of the agent’s lifecycle until termination.
+
+Managing context and state is relatively straightforward here, as explicit linear context handoffs reduce the risk of accumulating ambiguous or inconsistent ones.
+
+An example application of this workflow pattern is illustrated below:
+
+[](https://www.notion.so)
+
+### Branch Workflow
+
+This workflow is synonymous with asynchronous behaviour from the sub-agents. It starts with a main agent to initialize and delegate tasks among smaller sub-agents by routing. These sub-agents will normally work in parallel to one another, with context and state output passed and synchronized/merged across all paths. This aggregation of states is taken by a final agent in the line as the final output from the agents.
+
+Context management is critical here. Only task-relevant information should be passed forward. Poorly managed context leads to _context bloat;_ as a result, downstream agents may produce errors or generic outputs or just cause token limit exhaustion, slower and more expensive processing. In this workflow, more context is not necessarily better; disciplined, task-aware handoffs are ideal for efficiency and accuracy.
+
+An example application of this workflow pattern is illustrated below:
+
+[](https://www.notion.so)
+
+### Evaluator Workflow
+
+This workflow pattern introduces an evaluator agent responsible for assessing the outputs of sub-agents. The evaluator determines whether the task has been satisfactorily completed or if the process should be reiterated with revised objectives or instructions. For this approach to be effective, the evaluator must be provided with clear, measurable criteria in its system instructions. The workflow iterates until the evaluator validates the output as acceptable.
+
+An example application of this workflow pattern is illustrated below:
+
+[](https://www.notion.so)
+
+Here is a list of publications discussing many of these workflow design patterns and more in detail.
+
+https://www.anthropic.com/engineering/building-effective-agents
+
+https://x.com/theadultnoble/status/1930557050892751147
+
+https://langchain-ai.github.io/langgraph/tutorials/workflows/#routing
+
+<aside>
+  It is important to emphasize that these workflow design patterns are not
+  mutually exclusive; they may be combined or adapted to meet the requirements
+  of any use case. However, be sure to avoid unnecessary complexity, as simpler
+  solutions often provide greater reliability.
+</aside>
+
+## AI Agent Design Pattern Decision Checklist
+
+Before you jump into building your first AI agent, take a moment to think about a few critical design choices. These decisions will shape how your agent behaves, what tools it uses, and how much autonomy it has.
+
+- **What’s the goal?** Is your agent trying to complete a task, assist a human, make decisions, or continuously monitor something? Be specific.
+- **What’s the scope?** Will this be a single-agent system handling one type of task, or part of a larger multi-agent workflow?
+- **What actions will it be able to take?** Think about which external tools, APIs, or systems it needs to interact with.
+- **What kind of memory will it need?** Will the agent need to remember past user interactions, internal state, or long-term knowledge?
+- **How much reasoning is required?** Will it just follow a basic workflow, or adapt dynamically based on outcomes?
+
+Having answers to these questions, even rough ones, will make building your first agent far smoother. If you’re unsure how, don’t worry: the next page walks you through building a simple agent that puts these methodologies into action.
