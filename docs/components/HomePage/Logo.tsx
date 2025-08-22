@@ -1,4 +1,3 @@
-// docs/components/HomePage/Logo.tsx
 export function Logo() {
   return (
     <img

@@ -4,6 +4,18 @@ export default defineConfig({
   title: "Recipes for AI",
   sidebar: [
     {
+      text: "Getting Started",
+      link: "/getting-started",
+    },
+    {
+      text: "Foundations",
+      link: "/foundations",
+    },
+    {
+      text: "Model Selection Guide",
+      link: "/model-selection-guide",
+    },
+    {
       text: "Prompt Guide",
       link: "/prompt-guide",
     },
@@ -18,6 +30,10 @@ export default defineConfig({
     {
       text: "Build-an-agent",
       link: "/build-an-agent",
+    },
+    {
+      text: "Contributing guide",
+      link: "/contributing-guide",
     },
     {
       text: "Glossary",

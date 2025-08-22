@@ -1,0 +1,90 @@
+## What is AI?
+
+Intelligence is present in all living things, some species more than others. It is a biological trait that evolves and can manifest in various ways like critical thinking, memory and planning, etc. Computers inherently have neither the ability to think, plan or memorize. Artificial Intelligence or AI as commonly used is the mimicking of intelligent beings trait or ability to learn, adapt and apply knowledge by a computer program. All skills that are dependent on critical thinking, memory and planning. A computer system is not now only restricted to what it was programmed to do. The programming is now to learn to do everything.
+
+This is achieved by applying different methodologies including [machine learning](https://en.wikipedia.org/wiki/Machine_learning), [deep learning](https://en.wikipedia.org/wiki/Deep_learning) and [natural language processing](https://en.wikipedia.org/wiki/Natural_language_processing).
+
+These lead to long suit of technology that have been applied to many public user products from non generative AI applications like simple machine learning algorithms in Netflix to create personalized film recommendations for users based on their view history to newer and more advanced generative AI applications like [Large Language models](https://www.notion.so/Foundations-2562c2cd026980d5b12af5e947e08677?pvs=21) that power popular generative chatbots like [ChatGPT](https://chatgpt.com), [Claude](https://claude.ai), and [Gemini](https://gemini.google.com) through natural language processing.
+
+## Generative vs Non Generative AI
+
+Artificial Intelligence systems can broadly be categorized into **generative** and **non-generative** models, depending on how they process data and produce outputs.
+
+**Non-generative AI** focuses on analyzing, classifying, and predicting based on existing patterns in data. These systems do not create new content; instead, they excel at tasks like detecting spam emails, recommending products, diagnosing medical images, or predicting stock trends. The outputs are derived from statistical models or decision rules that match inputs to pre-learned categories. In essence, non-generative AI is about _recognizing and responding_ rather than creating.
+
+**Generative AI**, on the other hand, goes beyond recognition by producing entirely new outputs that resemble the data it was trained on. These models can generate text, images, audio, video, or even code. Examples include large language models (LLMs) like GPT, which generate human-like text, or image models like Stable Diffusion and DALL·E that create original artwork from prompts.
+
+In short, **non-generative AI tells you _what is_**, while **generative AI creates _what could be_**.
+
+## Large Language Models
+
+A large language model is a type of generative AI trained on insanely large amount of text data to simulate the human brains ability for natural language processing and generate language from that text data. These models are fed with trillions of tokenized text data called tokens that serve as input output elements for the LLMs language processing. The text data consist of books, articles, websites, code, conversations, and so much more. The idea is to feed the model with as much knowledge that exists for it to use material to learn how to answer prompts and navigate requests. Along with LLMs, also exist Large Multimodal Models and Large Reasoning models. These are specialized models trained to excel at a different aspect of model intelligence. The LMMs are trained on not only text, but all other data types like tokenized audio, image and videos . They can also generate responses in these formats as well. An example of this kind of model is the GPT-4o. LRMs are trained on advanced reasoning patterns and are skilled in handling complex problems involving many steps and foresight. They are primarily used to solve math, and writing program code. A popular example is the DeepSeeks R1.
+
+Comparison of the types of large models
+
+[]()
+
+So the question is how does a model use this tokenized data to generate the responses it outputs in natural language? Large language perform text generation by _prediction._ Yes the AI in natural language processing outputs is just advanced machine learning algorithms, predicting what word(token) is likely to come next after processing. Think of it as text autocomplete on steroids.
+
+A model does not understand language the way human beings do. When a prompt is sent, your input text is tokenized on entry. A token consist of broken pieces of text that the model recognizes. For example a sentence like ‘What is a Transformer?’ can be broken up into 6 tokens supposedly something like this; `[’what’, ‘is’ ‘a’, ‘Trans’, ‘former’, ‘?’]` . The individual tokens are assigned to arbitrary numbers that represent them in the model. From they are matched against billions of parameters that hold all the information the model was trained on. To determine what to respond the model turns the dials on those parameters against each token in your input to determine what token has the best chance (weight) of being the best answer to your prompt request. This process runs for every single token until a complete response has been ouputted.
+
+Let’s walk through the stages.
+
+Explain input output process:
+
+[]()
+
+This entire computational architecture are usually handled by a [Neural Network](<https://en.wikipedia.org/wiki/Neural_network_(machine_learning)>). The most common neural network used to handle model inference and token processing in most AI models today is called a _Transformer_. This architecture is the foundation of modern LLMs (GPT, Claude, LLaMA, Gemini, etc.) because of it’s extended leverage to learn more and unlike _Recurrent neural network_ **(**RNNs), training is much faster.
+
+## Model Fine-tuning
+
+Models can be fine tuned to further refine thier knowledge and improve results during inference. This fine tuning process is carried out after the original training data of a language model. The goal of fine tuning is to turn a model into specialist at a discipline or field without re undergoing the expensive computational process of training that model on these new set of data. As the model is fed with specialized data, it’s parameters are adjusted slightly to accomodate the changes in it’s training.
+
+This result can be carried in many ways like;
+
+- **Full Fine-Tuning**: This invoves updating all model parameters. This is expensive and rarely done now.
+- **Parameter-Efficient Fine-Tuning (PEFT)**: Different layers of the models neural network is frozen to avoid augmenting. The rest of the model is fitted with small trainable adapters that have fewer parameters(weights). This saves alot of compute + memory.
+- **Instruction Tuning**: Train models to follow instructions better, usually with Q&A style data.
+- **RLHF (Reinforcement Learning with Human Feedback)**: This method aligns models with human preferences by ranking reponses the AI gives through human feedback. This is called annotating and is a very common way of augmenting model training.
+
+The datasets used to fine tune models must be cleaned **by** removing low-quality, duplicated, or bias data to improve the quality and increase training efficiency.
+
+## Quantization
+
+Quantization is a popular technique applied to downsize models without losing quality training data and inturn reducing the computational and memory costs of running inference. This is done by lowering the weight of a single parameter in the model.
+
+Model parameters are packed in single units of 32-bit floating point (`float32`) datatype and a 16- bit floating point (`float16`). The floating points are numbers that represent each parameter and the precision at which a weight can predict tokens and interrelate tokens spread out across far distances. At this data size a relatively large model like LLaMA 2 with 65 billion parameters we can calculate the size of the model using the following equation:
+
+$Model.size (GB)≈ Parameters.bits ×Precision / 8 × 10^9$
+
+That means _LLaMA 2_ with 65 billion parameters using the lower precision `float16` will be 130GB.
+
+This is obviously quite heavy for most personal computers to run on their memory and results in slower inference. The idea is to scale this limitation when needed.
+
+## Context Window
+
+The context window refers to the number of input or output tokens a model can take into consideration when processing tokens or running inference. This number may differ from model to model depending on the models training on reading large texts, how the positional encoding of that model is designed(Architecture) and the devoted compute budget to that model. These fall outside the scope of this foundation guide and will not be discussed in detail.
+
+When a token exceeds a models context window limit the next response becomes less informed as the last and the model essebtially “forgets” all generated tokens outside that window. This long thread of input and output tokens passes back and forth from user to model is called a _converation thread._ Many models have their context windows publicly published for users.
+
+## Retrieval-Augmented Generation (RAG)
+
+RAG (Retrieval-Augmented Generation) is a technique where AI systems retrieve relevant information from external knowledge bases before generating responses. It emerged as a solution to LLMs' knowledge limitations and hallucination problems. Models get outdated in the sense that the knowledge they are trained with are no longer accurate or relevant. RAG solves this by letting the model pull in _fresh, factual data_ during inference from a a knowledge base (database, docs, vector store) for relevant passages, Inject those retrieved passages into the model’s prompt and generates an answer grounded in both its own reasoning + retrieved info.
+
+This retrieval process is achieved through queries converted into embeddings. These embeddings are matched against a **vector database** of documents (knowledge base) and the top relevant results/passages are returned to the model to pass as extra context attached to the query input.
+
+Example:
+
+```jsx
+input: What’s the latest update on Ethereum blobs?
+
+... RAG kicks in (Searches knowledge base for relevant data)
+
+ReturnedContext: [Passage 1], [Passage 2]...
+
+Input :  What’s the latest update on Ethereum blobs? + [ReturnedContext]
+
+output:
+```
+
+This retrieval however adds extra steps in inference, making responses slower and affecting latency.
